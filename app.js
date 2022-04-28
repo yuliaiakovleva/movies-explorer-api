@@ -13,7 +13,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const app = express();
 
 console.log(process.env.NODE_ENV);
-console.log(process.env.JWT_SECRET);
+console.log(process.env.DB);
 
 const { PORT = 3000 } = process.env;
 
@@ -48,7 +48,8 @@ app.use(errors()); // это обработчик ошибок celebrate
 app.use(errorHandler);
 
 async function main() {
-  await mongoose.connect('mongodb://0.0.0.0:27017/bitfilmsdb', {
+  await mongoose.connect('mongodb://0.0.0.0:27017/bitfilmsdb', 
+  {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
