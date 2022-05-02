@@ -24,6 +24,7 @@ module.exports.getMovies = (req, res, next) => {
 // создаёт фильм с переданными в теле
 // country, director, duration, year, description, image, trailer, nameRU, nameEN и thumbnail,
 // movieId
+
 module.exports.createMovie = (req, res, next) => {
   const {
     nameRU,
@@ -36,13 +37,13 @@ module.exports.createMovie = (req, res, next) => {
     trailerLink,
     image,
     thumbnail,
+    movieId,
   } = req.body;
 
   // console.log(req.body);
   // console.log(req.user._id, 'ID пользователя');
   const owner = req.user._id;
 
-  const movieId = req.body.id;
   // console.log(req.body.id);
 
   Movie.create({
@@ -56,8 +57,8 @@ module.exports.createMovie = (req, res, next) => {
     trailerLink,
     image,
     thumbnail,
-    movieId,
     owner,
+    movieId,
   })
     .then((movie) => res.send(movie))
     .catch((err) => {
