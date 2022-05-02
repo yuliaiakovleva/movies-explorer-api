@@ -70,11 +70,7 @@ module.exports.getCurrentUser = (req, res, next) => {
     })
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequestError('Передан невалидный id пользователя'));
-      } else {
-        next(err);
-      }
+      next(err);
     });
 };
 
