@@ -5,7 +5,6 @@ const {
   getMovies,
   createMovie,
   deleteMovie,
-  findMovie,
 } = require('../controllers/movie');
 
 const { validateMovieId, validateMovieData } = require('../middlewares/validation');

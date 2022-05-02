@@ -71,23 +71,22 @@ module.exports.createMovie = (req, res, next) => {
 
 // удаляет сохранённый фильм по id
 module.exports.deleteMovie = (req, res, next) => {
-  console.log(req.params.id, 'req.params.id');
-  console.log(req.params);
+  // console.log(req.params.id, 'req.params.id');
+  // console.log(req.params);
   const { id } = req.params;
-  console.log(id, 'movieId');
+  // console.log(id, 'movieId');
   Movie.findById(id)
     // .populate('likes')
     .orFail(() => {
       throw new NotFoundError('Фильм по указанному _id не найден.');
     })
     .then((movie) => {
-      console.log(movie);
+      // console.log(movie);
       if (movie.owner.toString() === req.user._id) {
-        Movie.findByIdAndRemove(movie._id.toString())
+        return Movie.findByIdAndRemove(movie._id.toString())
           .then((answer) => res.send(answer));
-      } else {
-        next(new NoRightsError('У вас нет права удалять этот фильм.'));
       }
+      throw new NoRightsError('У вас нет права удалять этот фильм.');
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -95,31 +94,5 @@ module.exports.deleteMovie = (req, res, next) => {
       } else {
         next(err);
       }
-    });
-};
-
-module.exports.findMovie = (req, res) => {
-  console.dir(req.params);
-  // const { id } = req.params;
-  Movie.findById(req.params.id)
-    .then((movie) => res.send(movie))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res
-
-          .status(400)
-
-          .send({
-
-            message: 'Переданы некорректные данные при создании карточки.',
-
-          });
-      }
-
-      return res
-
-        .status(500)
-
-        .send({ message: `Произошла ошибка: ${err.name} ${err.message}` });
     });
 };

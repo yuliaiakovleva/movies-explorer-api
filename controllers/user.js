@@ -32,10 +32,10 @@ module.exports.createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((answer) => res.send({
-      name,
-      email,
-    }))
+    .then((answer) => res.send(
+      answer.name,
+      answer.email,
+    ))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при создании пользователя.'));
@@ -56,8 +56,6 @@ module.exports.login = (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
-      console.log('Я тут');
-      // console.log(token, 'Я тут');
       res.send({ token });
     })
     .catch(() => {
@@ -97,6 +95,9 @@ module.exports.editUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при обновлении профиля.'));
+      }
+      if (err.code === 11000) {
+        next(new DoubleUseEmailError('Почта принадлежит другому пользователю'));
       }
       if (err.name === 'CastError') {
         next(new BadRequestError('Передан невалидный id пользователя.'));
