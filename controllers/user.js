@@ -18,6 +18,8 @@ module.exports.createUser = (req, res, next) => {
     password,
   } = req.body;
 
+  console.log(req.body);
+
   User
     .findOne({ email })
     .then((user) => {
@@ -32,10 +34,11 @@ module.exports.createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((answer) => res.send(
-      answer.name,
-      answer.email,
-    ))
+    .then(() => {
+      // const name = answer.name;
+      // const email = answer.email;
+      res.status(200).send({ name, email, password });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при создании пользователя.'));
@@ -70,7 +73,11 @@ module.exports.getCurrentUser = (req, res, next) => {
     })
     .then((user) => res.send(user))
     .catch((err) => {
-      next(err);
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError('Передан невалидный id пользователя'));
+      } else {
+        next(err);
+      }
     });
 };
 
@@ -102,3 +109,4 @@ module.exports.editUser = (req, res, next) => {
       }
     });
 };
+

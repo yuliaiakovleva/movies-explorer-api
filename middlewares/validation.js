@@ -40,7 +40,7 @@ const validateMovieData = celebrate({
       }
       return helpers.message('Невалидная ссылка');
     }),
-    movieId: Joi.number().required(),
+    movieId: Joi.number(),
   }),
 });
 

@@ -7,10 +7,14 @@ const {
 
 // возвращает все сохранённые текущим пользователем фильмы
 module.exports.getMovies = (req, res, next) => {
-  // console.log(req.params);
+
+  const owner = req.user._id;
   Movie.find({})
     .then((movies) => {
-      res.send(movies);
+      console.log(movies);
+      const myMovies = movies.filter((item) => item.owner.toString() === owner);
+      res.send(myMovies);
+      // res.send(movies);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -24,7 +28,6 @@ module.exports.getMovies = (req, res, next) => {
 // создаёт фильм с переданными в теле
 // country, director, duration, year, description, image, trailer, nameRU, nameEN и thumbnail,
 // movieId
-
 module.exports.createMovie = (req, res, next) => {
   const {
     nameRU,
@@ -40,11 +43,8 @@ module.exports.createMovie = (req, res, next) => {
     movieId,
   } = req.body;
 
-  // console.log(req.body);
-  // console.log(req.user._id, 'ID пользователя');
-  const owner = req.user._id;
 
-  // console.log(req.body.id);
+  const owner = req.user._id;
 
   Movie.create({
     nameRU,
@@ -82,7 +82,6 @@ module.exports.deleteMovie = (req, res, next) => {
       throw new NotFoundError('Фильм по указанному _id не найден.');
     })
     .then((movie) => {
-      // console.log(movie);
       if (movie.owner.toString() === req.user._id) {
         return Movie.findByIdAndRemove(movie._id.toString())
           .then((answer) => res.send(answer));

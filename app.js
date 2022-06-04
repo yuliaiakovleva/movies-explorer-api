@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const errorHandler = require('./middlewares/errorHandler');
@@ -16,10 +17,9 @@ const { PORT = 3000 } = process.env;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// express.json();
 
 app.use(requestLogger); // подключаем логгер запросов
-
+app.use(cors());
 // app.use((req, res, next) => {
 //   console.log(req.method, req.path, req.params);
 //   next();
